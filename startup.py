@@ -18,10 +18,10 @@ logger = logging.getLogger(__name__)
 
 
 async def run_bot() -> None:
+    logger.info("starting Telegram bot...")
     bot = create_bot()
     await bot.delete_webhook(drop_pending_updates=True)
     dp = create_dispatcher()
-    logger.info("starting Telegram bot...")
     try:
         await dp.start_polling(bot)
     finally:
@@ -53,8 +53,8 @@ async def run_server() -> None:
 
 
 async def startup(to_launch: str) -> None:
-    logger.info(
-r""" ____                       ____      _    ___ ____  
+    logger.info(r"""
+ ____                       ____      _    ___ ____  
 |  _ \ __ _ _ __ __ _      |  _ \    / \  |_ _|  _ \ 
 | |_) / _` | '__/ _` |_____| |_) |  / _ \  | || | | |
 |  __/ (_| | | | (_| |_____|  _ <  / ___ \ | || |_| |
