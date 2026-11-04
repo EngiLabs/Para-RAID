@@ -8,7 +8,7 @@ from aiortc import RTCPeerConnection, RTCSessionDescription, MediaStreamTrack
 from aiortc.contrib.media import MediaRelay
 
 from core.state import state_snapshot
-from vision.pipeline import VisionPipeline
+from vision import VisionPipeline
 
 logger = logging.getLogger(__name__)
 

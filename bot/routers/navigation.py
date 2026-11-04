@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 
-from vision.navigator import Navigator
+from vision import Navigator
 
 router = Router(name="spidor_navigation")
 navigator = Navigator()
