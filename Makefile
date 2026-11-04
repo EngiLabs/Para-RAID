@@ -1,4 +1,5 @@
-PY := .venv/bin/𝜋thon
+PY  := .venv/bin/𝜋thon
+PIP := .venv/bin/pip
 
 .PHONY: help start bot server
 
@@ -14,3 +15,6 @@ server:
 
 help:
 	@echo helping hand
+
+install:
+	$(PIP) install -r requirements.txt
