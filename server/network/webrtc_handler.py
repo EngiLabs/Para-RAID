@@ -17,7 +17,7 @@ class WebRTCHandler:
     def __init__(self) -> None:
         self._pc: RTCPeerConnection | None = None
         self._relay = MediaRelay()
-        self._pipeline = VisionPipeline()
+        self.pipeline = VisionPipeline()
         self._consume_task: asyncio.Task | None = None
 
     async def handle_offer(self, sdp: str, sdp_type: str) -> RTCSessionDescription:
@@ -51,7 +51,7 @@ class WebRTCHandler:
             while True:
                 frame = await track.recv()
                 img = frame.to_ndarray(format="bgr24")
-                await self._pipeline.process_frame(img)
+                await self.pipeline.process_frame(img)
                 _, buffer = cv2.imencode(".jpg", img)
                 await state_snapshot.store_frame(buffer.tobytes())
         except asyncio.CancelledError:
