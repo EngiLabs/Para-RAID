@@ -1,7 +1,9 @@
+# REUNION MOVEMENT
+
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 
-from bot.config.keyboards import INLINE_MOVEMENT
+from ..botconfig.keyboards import INLINE_MOVEMENT
 
 router = Router(name="spidor_movement")
 

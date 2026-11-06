@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
-from bot.config.keyboards import INLINE_MAIN
+from ..botconfig.keyboards import INLINE_MAIN
 
 router = Router(name="spidor_start")
 

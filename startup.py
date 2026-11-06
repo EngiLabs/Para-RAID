@@ -5,7 +5,7 @@ from sys import argv
 
 import config as global_config
 
-from bot import create_bot, create_dispatcher
+from bot import create_bot, create_dispatcher, update_bot_stats
 from server import app
 from server.network.webrtc_handler import webrtc_handler
 
@@ -15,14 +15,17 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
+logging.getLogger("aiogram.dispatcher").disabled = True
 
 
-async def run_bot() -> None:
+async def run_bot(cmd: list[str]) -> None:
     logger.info("starting Telegram bot...")
     bot = create_bot()
     await bot.delete_webhook(drop_pending_updates=True)
     dp = create_dispatcher()
     try:
+        if len(cmd) > 0 and cmd[0] == "update":
+            await update_bot_stats(bot)
         await dp.start_polling(bot)
     finally:
         await bot.session.close()
@@ -52,7 +55,7 @@ async def run_server() -> None:
     await server.serve()
 
 
-async def startup(to_launch: str) -> None:
+async def startup(to_launch: list[str]) -> None:
     logger.info(r"""
  ____                       ____      _    ___ ____  
 |  _ \ __ _ _ __ __ _      |  _ \    / \  |_ _|  _ \ 
@@ -60,16 +63,16 @@ async def startup(to_launch: str) -> None:
 |  __/ (_| | | | (_| |_____|  _ <  / ___ \ | || |_| |
 |_|   \__,_|_|  \__,_|     |_| \_\/_/   \_\___|____/ 
 """)
-    if to_launch == "bot":
-        await run_bot()
-    elif to_launch == "server":
+    if len(to_launch) > 0 and to_launch[0] == "bot":
+        await run_bot(to_launch[1:] if len(to_launch) > 1 else [])
+    elif len(to_launch) > 0 and to_launch[0] == "server":
         await run_server()
     else:
         await gather(
             run_server(),
-            run_bot(),
+            run_bot([]),
         )
 
 
 if __name__ == "__main__":
-    run(startup(argv[1] if len(argv) > 1 else ""))
+    run(startup(argv[1:] if len(argv) > 1 else []))
