@@ -51,8 +51,8 @@ class Raid:
     async def request_telemetry(self) -> bool:
         return await self.send_command("request_telemetry")
 
-    async def set_led(self, r: int, g: int, b: int) -> bool:
-        return await self.send_command("set_led", {"r": r, "g": g, "b": b})
+    async def set_led(self, state: bool) -> bool:
+        return await self.send_command("set_led", {"state": state})
 
     async def home(self) -> bool:
         return await self.send_command("home")
