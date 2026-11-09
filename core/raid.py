@@ -41,22 +41,20 @@ class Raid:
             logger.exception("failed to send command '%s'", command)
             return False
 
-    async def send_request(self, request: str, payload: dict[str, Any] | None = None) -> bool:
+    async def send_photo_request(self) -> bool:
         if not self._ws:
-            logger.warning("cen't send request '%s': no WS connection", request)
+            logger.warning("cen't send photo request: no WS connection")
             return False
         message = {
-            "type": "request",
-            "request": request,
-            "payload": payload or {},
+            "type": "photo_request"
         }
         try:
             payload = json_dumps(message)
             await self._ws.send_text(payload)
-            logger.debug("sent request: '%s' with payload %s", request, payload)
+            logger.debug("sent photo request: '%s'", payload)
             return True
         except:
-            logger.exception("failed to send request '%s'", request)
+            logger.exception("failed to send photo request")
             return False
 
     async def move(self, direction: str) -> bool:
@@ -69,7 +67,7 @@ class Raid:
         return await self.send_command("set_gait", {"gait": gait})
 
     async def request_telemetry(self) -> bool:
-        return await self.send_request("telemetry")
+        return await self.send_command("telemetry")
 
     async def set_led(self, state: bool) -> bool:
         return await self.send_command("set_led", {"state": state})
@@ -78,7 +76,7 @@ class Raid:
         return await self.send_command("home")
 
     async def capture_photo(self) -> bool:
-        return await self.send_request("photo")
+        return await self.send_photo_request()
 
     async def navigate_to(self, x: float, y: float) -> bool:
         return await self.send_command("navigate_to", {"x": x, "y": y})
