@@ -2,17 +2,23 @@ from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, BufferedInputFile
 
+from asyncio import sleep
+
 from core import raid, state_snapshot
 
 router = Router(name="spidor_camera")
 
 
 async def actual_proceed_photo(message_link: Message):
-    if await raid.capture_photo() and state_snapshot.last_frame is not None and len(state_snapshot.last_frame) > 0:
-        await message_link.answer_photo(photo=BufferedInputFile(
-            file=state_snapshot.last_frame,
-            filename="frame.jpg"
-        ))
+    if await raid.capture_photo():
+        await sleep(1)
+        if state_snapshot.last_frame is not None and len(state_snapshot.last_frame) > 0:
+            await message_link.answer_photo(photo=BufferedInputFile(
+                file=state_snapshot.last_frame,
+                filename="frame.jpg"
+            ))
+        else:
+            await message_link.answer("a photo from the unit was corrupted")
     else:
         await message_link.answer("can't get a photo from the unit")
 

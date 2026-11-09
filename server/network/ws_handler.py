@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 from typing import Any
+from base64 import b64decode
 
 from core.state import state_snapshot
 from server.network.webrtc_handler import WebRTCHandler
@@ -29,6 +30,9 @@ async def handle_ws_message(raw: str) -> dict[str, Any] | None:
         return await _handle_webrtc_offer(message)
     elif msg_type == "ice_candidate":
         await _handle_ice_candidate(message)
+    elif msg_type == "photo_response":
+        await _handle_photo_response(message)
+
     else:
         logger.warning("unknown message type: %s", msg_type)
 
@@ -61,3 +65,12 @@ async def _handle_webrtc_offer(message: dict[str, Any]) -> dict[str, Any]:
 
 async def _handle_ice_candidate(message: dict[str, Any]) -> None:
     await webrtc_handler.add_ice_candidate(message.get("candidate", {}))
+
+
+async def _handle_photo_response(message: dict[str, Any]) -> None:
+    if message["status"] == "ok" and "image" in message:
+        photo_bytes = b64decode(message["image"])
+        await state_snapshot.store_frame(photo_bytes)
+        logger.info("photo stored in snapshot (%d bytes)", len(photo_bytes))
+    elif message["status"] == "error":
+        logger.error("photo response error: %s", message["detail"])
