@@ -33,7 +33,9 @@ class Raid:
             "payload": payload or {},
         }
         try:
-            await self._ws.send_text(json_dumps(message))
+            payload = json_dumps(message)
+            await self._ws.send_text(payload)
+            logger.debug("sent command: '%s' with payload %s", command, payload)
             return True
         except:
             logger.exception("failed to send command '%s'", command)

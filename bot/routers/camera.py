@@ -8,7 +8,7 @@ router = Router(name="spidor_camera")
 
 
 async def actual_proceed_photo(message_link: Message):
-    if await raid.capture_photo():
+    if await raid.capture_photo() and state_snapshot is not None and len(state_snapshot.last_frame) > 0:
         await message_link.answer_photo(photo=BufferedInputFile(
             file=state_snapshot.last_frame,
             filename="frame.jpg"
