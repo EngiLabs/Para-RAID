@@ -5,13 +5,19 @@ import logging
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
+
 from core.raid import raid
 from core.state import state_snapshot
 from server.network.ws_handler import handle_ws_message
 
+from api import api_router
+
+
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Para-RAID", version="0.1.0", docs_url=None, redoc_url=None, openapi_url=None)
+
+app.include_router(api_router, prefix="/api")
 
 
 @app.websocket("/ws")
