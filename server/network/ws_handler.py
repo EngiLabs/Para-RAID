@@ -40,13 +40,13 @@ async def handle_ws_message(raw: str) -> dict[str, Any] | None:
 
 
 async def _handle_telemetry(message: dict[str, Any]) -> None:
-    data = message.get("payload", {})
+    data = message.get("payload") or message.get("data") or {}
     await state_snapshot.update_telemetry(data)
     logger.debug("telemetry updated")
 
 
 async def _handle_status(message: dict[str, Any]) -> None:
-    payload = message.get("payload", {})
+    payload = message.get("payload") or message
     if "gait" in payload:
         state_snapshot.current_gait = payload["gait"]
     logger.debug("status update: %s", payload)
