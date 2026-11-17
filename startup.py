@@ -67,6 +67,9 @@ async def startup(to_launch: list[str]) -> None:
         await run_bot(to_launch[1:] if len(to_launch) > 1 else [])
     elif len(to_launch) > 0 and to_launch[0] == "server":
         await run_server()
+    elif len(to_launch) > 0 and to_launch[0] == "cli":
+        from cli import run_cli
+        await run_cli()
     else:
         await gather(
             run_server(),
