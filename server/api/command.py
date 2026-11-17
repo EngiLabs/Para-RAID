@@ -1,7 +1,22 @@
-from api import CommandRequest
+from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException
 from core import raid, state_snapshot
 from typing import Any
+
+
+class CommandRequest(BaseModel):
+    action: str
+    direction: str | None = None
+    distance_m: float | None = None
+    duration_s: float | None = None
+    speed: int = 255
+    gait: str | None = None
+    state: int | bool | None = None
+    roll: int = 0
+    pitch: int = 0
+    yaw: int = 0
+    x: float | None = None
+    y: float | None = None
 
 
 router = APIRouter()
