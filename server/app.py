@@ -10,7 +10,7 @@ from core.raid import raid
 from core.state import state_snapshot
 from server.network.ws_handler import handle_ws_message
 
-from api import api_router
+from .api import api_router
 
 
 logger = logging.getLogger(__name__)
