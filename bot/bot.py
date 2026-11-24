@@ -5,6 +5,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
 import config as global_config
+from .api_client import raid_api
 from .routers import start, movement, telemetry, camera, navigation
 
 
@@ -24,6 +25,7 @@ def create_dispatcher() -> Dispatcher:
         camera.router,
         navigation.router
     )
+    dp.shutdown.register(raid_api.close)
     return dp
 
 

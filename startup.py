@@ -1,13 +1,8 @@
 import logging
-import uvicorn
-from asyncio import run, gather
+from asyncio import run
 from sys import argv
 
 import config as global_config
-
-from bot import create_bot, create_dispatcher, update_bot_stats
-from server import app
-from server.network.webrtc_handler import webrtc_handler
 
 logging.basicConfig(
     level=logging.INFO,
@@ -19,7 +14,9 @@ logging.getLogger("aiogram.dispatcher").disabled = True
 
 
 async def run_bot(cmd: list[str]) -> None:
-    logger.info("starting Telegram bot...")
+    from bot import create_bot, create_dispatcher, update_bot_stats
+
+    logger.info("starting Telegram bot (RaidAPI: %s)...", global_config.RAID_API_URL)
     bot = create_bot()
     await bot.delete_webhook(drop_pending_updates=True)
     dp = create_dispatcher()
@@ -32,6 +29,10 @@ async def run_bot(cmd: list[str]) -> None:
 
 
 async def run_server() -> None:
+    import uvicorn
+    from server import app
+    from server.network.webrtc_handler import webrtc_handler
+
     logger.info(
         "starting WebRTC & CUDA router...",
         global_config.SERVER_HOST,
@@ -71,10 +72,7 @@ async def startup(to_launch: list[str]) -> None:
         from cli import run_cli
         await run_cli()
     else:
-        await gather(
-            run_server(),
-            run_bot([]),
-        )
+        print("skill issue. you had to specify what to launch")
 
 
 if __name__ == "__main__":
