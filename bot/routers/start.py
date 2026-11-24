@@ -10,8 +10,8 @@ router = Router(name="spidor_start")
 @router.message(CommandStart())
 async def cmd_start(message: Message) -> None:
     await message.answer(
-        "SPIDOR Control Panel!\n\n"
-        "/help = available commands.",
+        "SPIDOR Control Panel\n\n"
+        "/help = available commands",
         reply_markup=INLINE_MAIN
     )
 
@@ -22,8 +22,10 @@ async def cmd_help(message: Message) -> None:
 Available commands:
 /start
 /status
+/telemetry
 /photo
-/goto
+/home ???
+/goto x y
 /help
 """
                          )

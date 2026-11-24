@@ -3,9 +3,8 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 
+from ..api_client import raid_api
 from ..botconfig.keyboards import INLINE_MOVEMENT
-
-from core import raid
 
 
 router = Router(name="spidor_movement")
@@ -29,13 +28,13 @@ async def show_control(callback: CallbackQuery):
 
 @router.callback_query(F.data.in_(DIRECTION_MAP))
 async def handle_movement(callback: CallbackQuery):
-    if not await raid.move_timed(DIRECTION_MAP[callback.data], distance_m=.1):
+    if not await raid_api.move(DIRECTION_MAP[callback.data], distance_m=.1):
         await callback.message.answer("an error occured during movement call")
     await callback.answer()
 
 
 @router.callback_query(F.data == "move_stop")
 async def handle_stop(callback: CallbackQuery):
-    if not await raid.stop():
+    if not await raid_api.stop():
         await callback.message.answer("an error occured during stop call")
     await callback.answer()
