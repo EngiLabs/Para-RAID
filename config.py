@@ -5,10 +5,13 @@ load_dotenv(".envy")
 
 
 TELEGRAM_BOT_TOKEN = getenvy("TELEGRAM_BOT_TOKEN")
-ALLOWED_USERS = (int(uid.strip()) for uid in getenvy("ALLOWED_USERS", "skill issue").split(",") if uid.strip())
+ALLOWED_USERS = tuple(int(uid.strip()) for uid in getenvy("ALLOWED_USERS", "skill issue").split(",") if uid.strip())
 
 SERVER_HOST =     getenvy("SERVER_HOST")
 SERVER_PORT = int(getenvy("SERVER_PORT", "skill issue"))
+
+_DEFAULT_API_HOST = "127.0.0.1" if SERVER_HOST in ("0.0.0.0", "", None) else SERVER_HOST
+RAID_API_URL = getenvy("RAID_API_URL", f"http://{_DEFAULT_API_HOST}:{SERVER_PORT}")
 
 
 DEFAULT_SPEED_MPS = 0.05
