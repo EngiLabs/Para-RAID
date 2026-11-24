@@ -36,6 +36,8 @@ class Snapshot:
     _lock: asyncio.Lock = field(default_factory=asyncio.Lock, repr=False)
     _last_imu_ts: float | None = field(default=None, repr=False)
     _imu_initialized: bool = field(default=False, repr=False)
+    _frame_seq: int = field(default=0, repr=False)
+    _frame_cond: asyncio.Condition = field(default_factory=asyncio.Condition, repr=False)
 
     async def update_telemetry(self, data: dict[str, Any]) -> None:
         async with self._lock:
@@ -97,13 +99,31 @@ class Snapshot:
         async with self._lock:
             self.connected = status
 
+    @property
+    def frame_seq(self) -> int:
+        return self._frame_seq
+
     async def store_frame(self, frame_bytes: bytes) -> None:
         async with self._lock:
             self.last_frame = frame_bytes
+            self._frame_seq += 1
+        async with self._frame_cond:
+            self._frame_cond.notify_all()
 
     async def get_snapshot(self) -> bytes | None:
         async with self._lock:
             return self.last_frame
+
+    async def wait_next_frame(self, after_seq: int, timeout: float = 2.0) -> bytes | None:
+        async def _wait() -> None:
+            async with self._frame_cond:
+                await self._frame_cond.wait_for(lambda: self._frame_seq > after_seq)
+
+        try:
+            await asyncio.wait_for(_wait(), timeout=timeout)
+        except asyncio.TimeoutError:
+            return None
+        return await self.get_snapshot()
 
     def to_dict(self) -> dict[str, Any]:
         return {
