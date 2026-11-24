@@ -130,8 +130,10 @@ class Raid:
         gait_id = GAIT_MAP.get(gait.lower(), 0)
         return await self.send_command("set_gait", {"gait_id": gait_id})
 
-    async def set_pose(self, roll: int = 0, pitch: int = 0, yaw: int = 0) -> bool:
-        return await self.send_command("set_pose", {"roll": roll, "pitch": pitch, "yaw": yaw})
+    async def set_pose(self, angles: list[float]) -> bool:
+        if len(angles) != 12:
+            raise ValueError(f"set_pose requires 12 angles, got {len(angles)}")
+        return await self.send_command("set_pose", {"angles": [float(a) for a in angles]})
 
     async def request_telemetry(self) -> bool:
         return await self.send_command("telemetry")

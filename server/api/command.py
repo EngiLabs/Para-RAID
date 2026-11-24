@@ -62,8 +62,13 @@ async def post_command(cmd: CommandRequest) -> dict[str, Any]:
         return {"status": "ok" if ok else "error", "action": "wake"}
 
     elif action in ("pose", "set_pose"):
-        ok = await raid.set_pose(cmd.roll, cmd.pitch, cmd.yaw)
-        return {"status": "ok" if ok else "error", "action": "set_pose", "angles": [cmd.roll, cmd.pitch, cmd.yaw]}
+        if not cmd.angles or len(cmd.angles) != 12:
+            raise HTTPException(
+                status_code=400,
+                detail="12 servo angles (RF, LF, RB, LB × [phi, alpha, beta] in degrees) are required for set_pose",
+            )
+        ok = await raid.set_pose(cmd.angles)
+        return {"status": "ok" if ok else "error", "action": "set_pose", "angles": cmd.angles}
 
     elif action in ("led", "set_led"):
         val = 1 if cmd.state else 0

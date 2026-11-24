@@ -190,8 +190,8 @@ class CLI:
         )
         table.add_row(
             "pose",
-            "pose 10 0 0",
-            "body pose angle control: {roll, pitch, yaw}",
+            "pose 0 0 0 ... (12 angles)",
+            "set 12 joint angles in deg: RF, LF, RB, LB × (phi, alpha, beta)",
         )
         table.add_row(
             "led",

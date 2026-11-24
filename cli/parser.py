@@ -96,9 +96,9 @@ def parse_command(raw_input: str, current_speed: int = 255) -> dict[str, Any] | 
         return {"action": "wake"}
 
     if cmd in ("pose", "set_pose"):
-        if len(args) < 3:
+        if len(args) != 12:
             raise ValueError("wtf ya doing bro")
-        return {"action": "set_pose", "roll": int(args[0]), "pitch": int(args[1]), "yaw": int(args[2])}
+        return {"action": "set_pose", "angles": [float(a) for a in args]}
 
     if cmd in ("led", "set_led"):
         if not args:
