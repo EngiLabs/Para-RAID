@@ -83,9 +83,45 @@ async def post_command(cmd: CommandRequest) -> dict[str, Any]:
         ok = await raid.navigate_to(cmd.x, cmd.y)
         return {"status": "ok" if ok else "error", "action": "navigate_to", "target": {"x": cmd.x, "y": cmd.y}}
 
-    elif action in ("status", "telemetry"):
-        await raid.request_telemetry()
-        return {"status": "ok", "snapshot": state_snapshot.to_dict()}
+    elif action == "status":
+        return {
+            "status": "ok",
+            "action": "status",
+            "snapshot": state_snapshot.to_dict(),
+            "formatted": state_snapshot.format_server_status(),
+        }
+
+    elif action == "telemetry":
+        if not raid.is_connected:
+            return {
+                "status": "error",
+                "action": "telemetry",
+                "detail": "robot not connected",
+                "snapshot": state_snapshot.to_dict(),
+            }
+        seq = state_snapshot.telemetry_seq
+        ok = await raid.request_telemetry()
+        if not ok:
+            return {
+                "status": "error",
+                "action": "telemetry",
+                "detail": "failed to send telemetry request",
+                "snapshot": state_snapshot.to_dict(),
+            }
+        received = await state_snapshot.wait_next_telemetry(seq, timeout=1.0)
+        if not received:
+            return {
+                "status": "error",
+                "action": "telemetry",
+                "detail": "telemetry timeout (no response from unit)",
+                "snapshot": state_snapshot.to_dict(),
+            }
+        return {
+            "status": "ok",
+            "action": "telemetry",
+            "snapshot": state_snapshot.to_dict(),
+            "formatted": state_snapshot.format_telemetry(),
+        }
 
     else:
         raise HTTPException(status_code=400, detail=f"Unknown action: '{action}'")

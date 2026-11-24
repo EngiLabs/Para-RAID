@@ -18,12 +18,12 @@ INLINE_MOVEMENT = InlineKeyboardMarkup(inline_keyboard=[
 INLINE_MAIN = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(text="🎮 Control", callback_data="show_control"),
-        InlineKeyboardButton(text="📊 Status", callback_data="req_status"),
+        InlineKeyboardButton(text="🖥️ Status", callback_data="req_status"),
     ],
     [
+        InlineKeyboardButton(text="📊 Telemetry", callback_data="req_telemetry"),
         InlineKeyboardButton(text="📷 Photo", callback_data="req_photo"),
-        InlineKeyboardButton(text="🏠 Home", callback_data="cmd_home"),
-    ],
+    ]
 ])
 
 
