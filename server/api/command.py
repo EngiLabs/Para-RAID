@@ -12,9 +12,7 @@ class CommandRequest(BaseModel):
     speed: int = 255
     gait: str | None = None
     state: int | bool | None = None
-    roll: int = 0
-    pitch: int = 0
-    yaw: int = 0
+    angles: list[float] | None = None
     x: float | None = None
     y: float | None = None
 

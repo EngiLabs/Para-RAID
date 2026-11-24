@@ -240,6 +240,11 @@ class CLI:
 
         telem = self.latest_status.get("telemetry", {})
         table.add_row("IR", str(telem.get("ir_sensors", [])))
+        table.add_row(
+            "IMU",
+            f"R={telem.get('imu_roll', 0.0):.1f}° P={telem.get('imu_pitch', 0.0):.1f}° Y={telem.get('imu_yaw', 0.0):.1f}°",
+        )
+        table.add_row("IMU accel/gyro", f"{telem.get('imu_accel', [])} / {telem.get('imu_gyro', [])}")
         table.add_row("GAIT", str(self.latest_status.get("current_gait", "-")))
 
         pos = self.latest_status.get("position", {})
