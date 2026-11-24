@@ -11,8 +11,6 @@ class Telemetry:
     imu_pitch: float = .0
     imu_yaw: float = .0
     ir_sensors: list[float] = field(default_factory=list)
-    battery_voltage: float = .0
-    battery_percent: int = 0
 
 
 @dataclass
@@ -40,8 +38,6 @@ class Snapshot:
                 imu_pitch=data.get("imu_pitch", self.telemetry.imu_pitch),
                 imu_yaw=data.get("imu_yaw", self.telemetry.imu_yaw),
                 ir_sensors=data.get("ir_sensors", self.telemetry.ir_sensors),
-                battery_voltage=data.get("battery_voltage", self.telemetry.battery_voltage),
-                battery_percent=data.get("battery_percent", self.telemetry.battery_percent),
             )
 
     async def update_position(self, x: float, y: float, heading: float) -> None:
@@ -68,8 +64,6 @@ class Snapshot:
                 "imu_pitch": self.telemetry.imu_pitch,
                 "imu_yaw": self.telemetry.imu_yaw,
                 "ir_sensors": self.telemetry.ir_sensors,
-                "battery_voltage": self.telemetry.battery_voltage,
-                "battery_percent": self.telemetry.battery_percent,
             },
             "position": {
                 "x": self.position.x,
@@ -84,7 +78,6 @@ class Snapshot:
         t = self.telemetry
         return (f"""
 connection: {'✅' if self.connected else '❌'}
-battery: {t.battery_percent}% ({t.battery_voltage:.1f}V)
 IR: {t.ir_sensors}
 IMU: R={t.imu_roll:.1f} P={t.imu_pitch:.1f} Y={t.imu_yaw:.1f}
 gait: {self.current_gait}

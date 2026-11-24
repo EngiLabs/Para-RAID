@@ -86,13 +86,11 @@ class CLI:
             '<style class="bottom-toolbar.off">UNIT OFFLINE</style>'
         )
 
-        bat_pct = telem.get("battery_percent", 0)
-        bat_v = telem.get("battery_voltage", 0.0)
         x = pos.get("x", 0.0)
         y = pos.get("y", 0.0)
 
         return HTML(
-            f' {unit_badge} | 🔋 <style class="bottom-toolbar.info">{bat_pct}% ({bat_v:.1f}V)</style>'
+            f' {unit_badge}'
             f' | gait: <style class="bottom-toolbar.info">{gait}</style>'
             f' | position: ({x:.2f}, {y:.2f})'
             f' | speed: {self.current_speed} '
@@ -241,7 +239,6 @@ class CLI:
         table.add_row("connection", "W" if connected else "L")
 
         telem = self.latest_status.get("telemetry", {})
-        table.add_row("V", f"{telem.get('battery_percent', 0)}% ({telem.get('battery_voltage', 0.0):.1f}V)")
         table.add_row("IR", str(telem.get("ir_sensors", [])))
         table.add_row("GAIT", str(self.latest_status.get("current_gait", "-")))
 
